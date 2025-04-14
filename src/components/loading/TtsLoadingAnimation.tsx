@@ -14,6 +14,21 @@ interface TtsLoadingAnimationProps {
   width?: number;
 }
 
+// Define a type for the animation data
+interface AnimationData {
+  v: string;
+  fr: number;
+  ip: number;
+  op: number;
+  w: number;
+  h: number;
+  nm: string;
+  ddd: number;
+  assets: unknown[];
+  layers: unknown[];
+  [key: string]: unknown;
+}
+
 export function TtsLoadingAnimation({
   messages = [],
   height = 200,
@@ -21,7 +36,9 @@ export function TtsLoadingAnimation({
 }: TtsLoadingAnimationProps) {
   const { t } = useTranslation("tts");
   const [messageIndex, setMessageIndex] = useState(0);
-  const [animationData, setAnimationData] = useState<any>(null);
+  const [animationData, setAnimationData] = useState<AnimationData | null>(
+    null
+  );
 
   // Default messages if none provided
   const defaultMessages = [
@@ -45,7 +62,7 @@ export function TtsLoadingAnimation({
   // Load animation data dynamically on client
   useEffect(() => {
     // Use a dynamic import that doesn't rely on the file system path
-    import("@/../../public/animations/tts-loading.json")
+    import("../../../public/animations/tts-loading.json")
       .then((data) => {
         setAnimationData(data.default);
       })
