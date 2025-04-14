@@ -225,32 +225,6 @@ export function TtsForm() {
                 />
               )}
             />
-            <Controller
-              name="speed"
-              control={control}
-              render={({ field }) => (
-                <Radio.Group
-                  {...field}
-                  label={t("inputs.speed.label")}
-                  data-testid="tts-speed-radio"
-                >
-                  <Group mt="xs">
-                    <Radio
-                      value={SpeedEnum.SLOW}
-                      label={t("inputs.speed.options.slow")}
-                    />
-                    <Radio
-                      value={SpeedEnum.NORMAL}
-                      label={t("inputs.speed.options.normal")}
-                    />
-                    <Radio
-                      value={SpeedEnum.FAST}
-                      label={t("inputs.speed.options.fast")}
-                    />
-                  </Group>
-                </Radio.Group>
-              )}
-            />
             <Button type="submit" data-testid="tts-generate-button">
               {t("actions.generate")}
             </Button>
