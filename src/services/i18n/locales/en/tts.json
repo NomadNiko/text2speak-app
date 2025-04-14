@@ -33,7 +33,8 @@
     "processing": "Processing your text...",
     "analyzing": "Analyzing voice patterns...",
     "generating": "Generating speech...",
-    "almostDone": "Almost done..."
+    "almostDone": "Almost done...",
+    "timeElapsed": "Time elapsed: {{seconds}}s"
   },
   "result": {
     "title": "Generated Speech",
@@ -43,6 +44,7 @@
   "alerts": {
     "success": "Speech generated successfully",
     "error": "Error generating speech",
-    "loading": "Generating speech, please wait..."
+    "loading": "Generating speech, please wait...",
+    "cancelled": "Speech generation cancelled"
   }
 }
