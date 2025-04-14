@@ -1,6 +1,5 @@
 // src/app/[language]/text-to-speech/page-content.tsx
 "use client";
-
 import { Container, Title, Text, Stack, Paper } from "@mantine/core";
 import { useTranslation } from "@/services/i18n/client";
 import { TtsForm } from "@/components/tts/TtsForm";
@@ -21,7 +20,6 @@ function TextToSpeechPage() {
       <Stack gap="lg">
         <Title order={2}>{t("title")}</Title>
         <Text>{t("description")}</Text>
-
         <Paper shadow="sm" radius="md" p="lg" withBorder>
           <TtsForm />
         </Paper>

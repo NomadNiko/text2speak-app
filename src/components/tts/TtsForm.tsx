@@ -28,7 +28,7 @@ import { useSnackbar } from "@/components/mantine/feedback/notification-service"
 import useGlobalLoading from "@/services/loading/use-global-loading";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { AudioPlayer } from "./AudioPlayer";
-import Lottie from "lottie-react";
+import { TtsLoadingAnimation } from "../loading/TtsLoadingAnimation";
 
 // Updated interface with optional properties
 interface TtsFormData {
@@ -50,18 +50,8 @@ export function TtsForm() {
   const [generatedSpeech, setGeneratedSpeech] =
     useState<GenerateTtsResponse | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [messageIndex, setMessageIndex] = useState(0);
   const [elapsedTime, setElapsedTime] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const messageIntervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Loading messages to display during generation
-  const loadingMessages = [
-    t("loading.processing", "Processing your text..."),
-    t("loading.analyzing", "Analyzing voice patterns..."),
-    t("loading.generating", "Generating speech..."),
-    t("loading.almostDone", "Almost done..."),
-  ];
 
   const validationSchema = yup.object({
     text: yup.string().required(t("inputs.text.validation.required")),
@@ -112,47 +102,35 @@ export function TtsForm() {
     fetchVoices();
   }, [getVoicesService, setLoading, t, enqueueSnackbar, reset]);
 
-  // Effect for cycling through messages during loading
+  // Effect for tracking elapsed time during generation
   useEffect(() => {
     if (isGenerating) {
-      messageIntervalRef.current = setInterval(() => {
-        setMessageIndex((prev) => (prev + 1) % loadingMessages.length);
-      }, 2500);
-
       // Start timer to track elapsed time
       timerRef.current = setInterval(() => {
         setElapsedTime((prev) => prev + 1);
       }, 1000);
     }
-
     return () => {
-      // Clean up intervals when component unmounts or generation finishes
-      if (messageIntervalRef.current) clearInterval(messageIntervalRef.current);
+      // Clean up interval when component unmounts or generation finishes
       if (timerRef.current) clearInterval(timerRef.current);
-
       // Reset states when cleaned up
       if (!isGenerating) {
-        setMessageIndex(0);
         setElapsedTime(0);
       }
     };
-  }, [isGenerating, loadingMessages.length]);
+  }, [isGenerating]);
 
   const onSubmit: SubmitHandler<TtsFormData> = async (formData) => {
-    // Show both global loading indicator and local generating state
-    setLoading(true);
+    // Only set local generating state - don't use global loading
     setIsGenerating(true);
     enqueueSnackbar(t("alerts.loading"), { variant: "info" });
-
     try {
       const request: GenerateTtsRequest = {
         text: formData.text,
         speaker: formData.speaker || defaultVoice,
         speed: formData.speed,
       };
-
       const response = await generateTtsService(request);
-
       if (
         response.status === HTTP_CODES_ENUM.CREATED ||
         response.status === HTTP_CODES_ENUM.OK
@@ -167,10 +145,8 @@ export function TtsForm() {
       enqueueSnackbar(t("alerts.error"), { variant: "error" });
     } finally {
       setIsGenerating(false);
-      setLoading(false);
-      // Reset the timers
+      // Reset the timer
       setElapsedTime(0);
-      setMessageIndex(0);
     }
   };
 
@@ -180,33 +156,20 @@ export function TtsForm() {
 
   const handleCancelGeneration = () => {
     setIsGenerating(false);
-    setLoading(false);
     enqueueSnackbar(t("alerts.cancelled"), { variant: "info" });
   };
 
   return (
     <Box>
       {isGenerating ? (
-        // Show Lottie animation while generating
+        // Show TtsLoadingAnimation while generating - using the custom component directly
         <Center style={{ minHeight: 300 }}>
           <Stack align="center" gap="lg">
-            <Box style={{ width: 300, height: 200 }}>
-              <Lottie
-                animationData={require("/public/animations/tts-loading.json")}
-                loop={true}
-                style={{ width: "100%", height: "100%" }}
-              />
-            </Box>
-
-            <Text size="lg" fw={500} ta="center">
-              {loadingMessages[messageIndex]}
-            </Text>
-
+            <TtsLoadingAnimation />
             {/* Elapsed time indicator */}
             <Text size="sm" color="dimmed" ta="center">
               {t("loading.timeElapsed", { seconds: elapsedTime })}
             </Text>
-
             {/* Cancel button */}
             <Button
               variant="outline"
