@@ -5,9 +5,6 @@ import Lottie from "lottie-react";
 import { useTranslation } from "@/services/i18n/client";
 import { useState, useEffect } from "react";
 
-// If your JSON is in the public folder:
-const animationPath = "/animations/tts-loading.json";
-
 interface TtsLoadingAnimationProps {
   messages?: string[];
   height?: number;
@@ -47,7 +44,6 @@ export function TtsLoadingAnimation({
     <Center>
       <Stack align="center" gap="md">
         <Box style={{ width, height }}>
-          {/* Option 1: Using animationData with require */}
           <Lottie
             animationData={require("/public/animations/tts-loading.json")}
             loop={true}

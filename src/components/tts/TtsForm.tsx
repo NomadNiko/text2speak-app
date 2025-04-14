@@ -30,9 +30,6 @@ import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { AudioPlayer } from "./AudioPlayer";
 import Lottie from "lottie-react";
 
-// Use the animation path for the Lottie file in the public folder
-const animationPath = "/animations/tts-loading.json";
-
 // Updated interface with optional properties
 interface TtsFormData {
   text: string;
