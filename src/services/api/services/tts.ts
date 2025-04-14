@@ -43,19 +43,19 @@ export const useGenerateTtsService = createPostService<
   GenerateTtsRequest,
   GenerateTtsResponse
 >("/v1/tts/generate", {
-  requiresAuth: true,
+  requiresAuth: false, // Set to false to bypass auth check
 });
 
 export const useGetVoicesService = createGetService<GetVoicesResponse>(
   "/v1/tts/voices",
   {
-    requiresAuth: true,
+    requiresAuth: false, // Set to false to bypass auth check
   }
 );
 
 export const useGetTtsStatusService = createGetService<GetTtsStatusResponse>(
   "/v1/tts/status",
   {
-    requiresAuth: true,
+    requiresAuth: false, // Set to false to bypass auth check
   }
 );
