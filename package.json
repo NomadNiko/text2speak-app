@@ -44,6 +44,7 @@
     "i18next-resources-to-backend": "^1.1.4",
     "imap": "^0.8.19",
     "js-cookie": "^3.0.5",
+    "lottie-react": "^2.4.1",
     "mailparser": "^3.7.0",
     "mui-tiptap": "^1.17.0",
     "nanoid": "^5.0.1",

@@ -29,7 +29,12 @@
       }
     }
   },
-  "loading": "Generating speech... This may take a few moments.",
+  "loading": {
+    "processing": "Processing your text...",
+    "analyzing": "Analyzing voice patterns...",
+    "generating": "Generating speech...",
+    "almostDone": "Almost done..."
+  },
   "result": {
     "title": "Generated Speech",
     "info": "Generated using voice: {{voice}} at {{speed}} speed",
