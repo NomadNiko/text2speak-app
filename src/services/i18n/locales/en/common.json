@@ -7,7 +7,8 @@
     "signUp": "Sign Up",
     "profile": "Profile",
     "users": "Users",
-    "logout": "Logout"
+    "logout": "Logout",
+    "tts": "Text to Speech"
   },
   "formInputs": {
     "avatarInput": {

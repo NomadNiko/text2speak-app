@@ -1,0 +1,43 @@
+{
+  "title": "Text to Speech",
+  "description": "Convert your text to natural-sounding speech",
+  "actions": {
+    "generate": "Generate Speech",
+    "newGeneration": "New Generation",
+    "download": "Download",
+    "play": "Play",
+    "pause": "Pause"
+  },
+  "inputs": {
+    "text": {
+      "label": "Text to Convert",
+      "placeholder": "Enter the text you want to convert to speech...",
+      "validation": {
+        "required": "Text is required"
+      }
+    },
+    "voice": {
+      "label": "Voice",
+      "defaultOption": "Default voice"
+    },
+    "speed": {
+      "label": "Speech Speed",
+      "options": {
+        "slow": "Slow",
+        "normal": "Normal",
+        "fast": "Fast"
+      }
+    }
+  },
+  "loading": "Generating speech... This may take a few moments.",
+  "result": {
+    "title": "Generated Speech",
+    "info": "Generated using voice: {{voice}} at {{speed}} speed",
+    "error": "There was an error generating speech. Please try again."
+  },
+  "alerts": {
+    "success": "Speech generated successfully",
+    "error": "Error generating speech",
+    "loading": "Generating speech, please wait..."
+  }
+}
