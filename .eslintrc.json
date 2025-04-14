@@ -1,0 +1,48 @@
+{
+  "extends": [
+    "next",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:storybook/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "prettier"],
+  "root": true,
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "tabWidth": 2,
+        "semi": true,
+        "endOfLine": "auto",
+        "singleQuote": false,
+        "trailingComma": "es5"
+      }
+    ],
+    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/no-namespace": "off",
+    "array-callback-return": "error",
+    "eqeqeq": "error",
+    "no-alert": "error",
+    "no-return-assign": "error",
+    "no-restricted-imports": [
+      "error",
+      {
+        "paths": [
+          {
+            "name": "@mui/material",
+            "message": "Please use \"import ComponentName from '@mui/material/ComponentName'\" instead."
+          },
+          {
+            "name": "@mui/icons-material",
+            "message": "Please use \"import IconName from '@mui/icons-material/IconName'\" instead."
+          },
+          {
+            "name": "next/link",
+            "message": "Please use \"import Link from \"@/components/link\"\" instead. This is need for \"leave page\" logic"
+          }
+        ]
+      }
+    ]
+  }
+}
