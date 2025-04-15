@@ -2,11 +2,12 @@
   "title": "Text to Speech",
   "description": "Convert your text to natural-sounding speech",
   "actions": {
-    "generate": "Generate Speech",
-    "newGeneration": "New Generation",
-    "download": "Download",
+    "playing": "Playing...",
     "play": "Play",
-    "pause": "Pause"
+    "pause": "Pause",
+    "download": "Download",
+    "generate": "Generate",
+    "newGeneration": "Create New"
   },
   "inputs": {
     "text": {
@@ -46,5 +47,11 @@
     "error": "Error generating speech",
     "loading": "Generating speech, please wait...",
     "cancelled": "Speech generation cancelled"
+  },
+  "history": {
+    "title": "Your Previous Generations",
+    "empty": "You haven't generated any speech yet. Create one above!",
+    "error": "Failed to load history",
+    "date": "Generated on"
   }
 }

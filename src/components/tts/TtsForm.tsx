@@ -1,4 +1,5 @@
 // src/components/tts/TtsForm.tsx
+// Modified to include onGenerationSuccess callback
 "use client";
 import { useState, useRef } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
@@ -35,7 +36,11 @@ interface TtsFormData {
   speed: SpeedEnum;
 }
 
-export function TtsForm() {
+interface TtsFormProps {
+  onGenerationSuccess?: () => void;
+}
+
+export function TtsForm({ onGenerationSuccess }: TtsFormProps) {
   const { t } = useTranslation("tts");
   const { enqueueSnackbar } = useSnackbar();
   const { setLoading } = useGlobalLoading();
@@ -135,6 +140,11 @@ export function TtsForm() {
       ) {
         setGeneratedSpeech(response.data);
         enqueueSnackbar(t("alerts.success"), { variant: "success" });
+
+        // Call the onGenerationSuccess callback if provided
+        if (onGenerationSuccess) {
+          onGenerationSuccess();
+        }
       } else {
         enqueueSnackbar(t("alerts.error"), { variant: "error" });
       }
