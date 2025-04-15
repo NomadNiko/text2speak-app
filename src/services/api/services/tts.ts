@@ -44,19 +44,19 @@ export const useGenerateTtsService = createPostService<
   GenerateTtsRequest,
   GenerateTtsResponse
 >("/v1/tts/generate", {
-  requiresAuth: false, // No auth required
+  requiresAuth: true,
 });
 
 export const useGetVoicesService = createGetService<GetVoicesResponse>(
   "/v1/tts/voices",
   {
-    requiresAuth: false, // No auth required
+    requiresAuth: true,
   }
 );
 
 export const useGetTtsStatusService = createGetService<GetTtsStatusResponse>(
   "/v1/tts/status",
   {
-    requiresAuth: false, // No auth required
+    requiresAuth: true,
   }
 );
