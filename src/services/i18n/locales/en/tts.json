@@ -52,6 +52,8 @@
     "title": "Your Previous Generations",
     "empty": "You haven't generated any speech yet. Create one above!",
     "error": "Failed to load history",
-    "date": "Generated on"
+    "date": "Generated on",
+    "audioError": "Error playing audio. The file may no longer be available.",
+    "downloadError": "Error downloading audio file."
   }
 }

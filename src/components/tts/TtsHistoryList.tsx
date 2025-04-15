@@ -1,6 +1,6 @@
 // src/components/tts/TtsHistoryList.tsx
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import {
   Card,
   Text,
@@ -11,12 +11,19 @@ import {
   Center,
   Title,
   Badge,
+  ActionIcon,
 } from "@mantine/core";
-import { IconPlayerPlay, IconCalendar } from "@tabler/icons-react";
+import {
+  IconPlayerPlay,
+  IconCalendar,
+  IconDownload,
+  IconPlayerPause,
+} from "@tabler/icons-react";
 import { useTranslation } from "@/services/i18n/client";
 import { useGetTtsHistoryService } from "@/services/api/services/tts-history";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { TtsHistoryItem } from "@/services/api/types/tts-history";
+import { useSnackbar } from "@/components/mantine/feedback/notification-service";
 
 interface TtsHistoryListProps {
   refreshTrigger?: number;
@@ -28,6 +35,8 @@ export function TtsHistoryList({ refreshTrigger = 0 }: TtsHistoryListProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
+  const audioRefs = useRef<Record<string, HTMLAudioElement>>({});
+  const { enqueueSnackbar } = useSnackbar();
   const getTtsHistory = useGetTtsHistoryService();
 
   const fetchHistory = useCallback(async () => {
@@ -36,7 +45,6 @@ export function TtsHistoryList({ refreshTrigger = 0 }: TtsHistoryListProps) {
       const response = await getTtsHistory();
       if (response.status === HTTP_CODES_ENUM.OK) {
         setHistoryItems(response.data);
-        console.log("Fetched history items:", response.data);
       } else {
         setError(t("history.error"));
       }
@@ -53,21 +61,53 @@ export function TtsHistoryList({ refreshTrigger = 0 }: TtsHistoryListProps) {
   }, [refreshTrigger, fetchHistory]);
 
   const playAudio = (url: string, id: string) => {
-    if (currentlyPlaying) {
-      const audioElement = document.getElementById(
-        `audio-${currentlyPlaying}`
-      ) as HTMLAudioElement;
-      if (audioElement) {
-        audioElement.pause();
+    try {
+      // Stop currently playing audio if any
+      if (currentlyPlaying) {
+        const currentAudio = audioRefs.current[currentlyPlaying];
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+        }
       }
-    }
-    const audioElement = document.getElementById(
-      `audio-${id}`
-    ) as HTMLAudioElement;
-    if (audioElement) {
-      audioElement.play();
+
+      // Get or create audio element
+      if (!audioRefs.current[id]) {
+        const audioElement = new Audio(url);
+        audioElement.onended = () => setCurrentlyPlaying(null);
+        audioElement.onerror = () => {
+          setCurrentlyPlaying(null);
+          enqueueSnackbar(t("history.audioError"), { variant: "error" });
+        };
+        audioRefs.current[id] = audioElement;
+      }
+
+      // Play audio
+      const audioElement = audioRefs.current[id];
+      audioElement.play().catch((error) => {
+        console.error("Error playing audio:", error);
+        enqueueSnackbar(t("history.audioError"), { variant: "error" });
+        setCurrentlyPlaying(null);
+      });
+
       setCurrentlyPlaying(id);
-      audioElement.onended = () => setCurrentlyPlaying(null);
+    } catch (error) {
+      console.error("Error handling audio playback:", error);
+      enqueueSnackbar(t("history.audioError"), { variant: "error" });
+    }
+  };
+
+  const downloadAudio = (url: string, filename: string) => {
+    try {
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+    } catch (error) {
+      console.error("Error downloading audio:", error);
+      enqueueSnackbar(t("history.downloadError"), { variant: "error" });
     }
   };
 
@@ -128,13 +168,28 @@ export function TtsHistoryList({ refreshTrigger = 0 }: TtsHistoryListProps) {
               <Button
                 size="xs"
                 variant={currentlyPlaying === item.id ? "filled" : "light"}
-                leftSection={<IconPlayerPlay size={16} />}
+                leftSection={
+                  currentlyPlaying === item.id ? (
+                    <IconPlayerPause size={16} />
+                  ) : (
+                    <IconPlayerPlay size={16} />
+                  )
+                }
                 onClick={() => playAudio(item.url, item.id)}
               >
                 {currentlyPlaying === item.id
                   ? t("actions.playing")
                   : t("actions.play")}
               </Button>
+
+              <ActionIcon
+                variant="light"
+                onClick={() => downloadAudio(item.url, item.filename)}
+                title={t("actions.download")}
+              >
+                <IconDownload size={16} />
+              </ActionIcon>
+
               <Text size="xs" c="dimmed">
                 <IconCalendar
                   size={14}
@@ -143,7 +198,6 @@ export function TtsHistoryList({ refreshTrigger = 0 }: TtsHistoryListProps) {
                 {formatDate(item.createdAt)}
               </Text>
             </Group>
-            <audio id={`audio-${item.id}`} src={item.url} />
           </Stack>
         </Card>
       ))}
