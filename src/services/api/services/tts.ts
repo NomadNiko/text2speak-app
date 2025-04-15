@@ -1,5 +1,5 @@
 // src/services/api/services/tts.ts
-// Update the frontend service files
+// Updated to require authentication for TTS generation
 import { createPostService, createGetService } from "../factory";
 import { SpeedEnum } from "../types/tts-types";
 
@@ -21,6 +21,7 @@ export type GenerateTtsResponse = {
 export type GetVoicesResponse = {
   defaultSpeaker: string;
   availableSpeakers: Record<string, string>;
+  voiceDetails: any[];
 };
 
 export type GetTtsStatusResponse = {
@@ -33,10 +34,6 @@ export type GetTtsStatusResponse = {
     command: string;
     status: string;
   };
-  s3: {
-    bucket: string;
-    status: string;
-  };
 };
 
 // API Services using the factory pattern
@@ -44,19 +41,19 @@ export const useGenerateTtsService = createPostService<
   GenerateTtsRequest,
   GenerateTtsResponse
 >("/v1/tts/generate", {
-  requiresAuth: true,
+  requiresAuth: true, // Changed to true to require authentication
 });
 
 export const useGetVoicesService = createGetService<GetVoicesResponse>(
   "/v1/tts/voices",
   {
-    requiresAuth: true,
+    requiresAuth: false,
   }
 );
 
 export const useGetTtsStatusService = createGetService<GetTtsStatusResponse>(
   "/v1/tts/status",
   {
-    requiresAuth: true,
+    requiresAuth: false,
   }
 );

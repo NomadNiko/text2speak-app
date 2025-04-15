@@ -28,7 +28,6 @@ export function TtsHistoryList({ refreshTrigger = 0 }: TtsHistoryListProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
-
   const getTtsHistory = useGetTtsHistoryService();
 
   const fetchHistory = useCallback(async () => {
@@ -37,10 +36,12 @@ export function TtsHistoryList({ refreshTrigger = 0 }: TtsHistoryListProps) {
       const response = await getTtsHistory();
       if (response.status === HTTP_CODES_ENUM.OK) {
         setHistoryItems(response.data);
+        console.log("Fetched history items:", response.data);
       } else {
         setError(t("history.error"));
       }
     } catch (err) {
+      console.error("Error fetching TTS history:", err);
       setError(t("history.error"));
     } finally {
       setLoading(false);
@@ -60,11 +61,9 @@ export function TtsHistoryList({ refreshTrigger = 0 }: TtsHistoryListProps) {
         audioElement.pause();
       }
     }
-
     const audioElement = document.getElementById(
       `audio-${id}`
     ) as HTMLAudioElement;
-
     if (audioElement) {
       audioElement.play();
       setCurrentlyPlaying(id);
@@ -73,8 +72,16 @@ export function TtsHistoryList({ refreshTrigger = 0 }: TtsHistoryListProps) {
   };
 
   const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return "Unknown date";
+      }
+      return date.toLocaleDateString() + " " + date.toLocaleTimeString();
+    } catch (e) {
+      console.error("Error formatting date:", e);
+      return "Unknown date";
+    }
   };
 
   if (loading) {
@@ -117,7 +124,6 @@ export function TtsHistoryList({ refreshTrigger = 0 }: TtsHistoryListProps) {
                 {item.speaker} / {item.speed}
               </Badge>
             </Group>
-
             <Group>
               <Button
                 size="xs"
@@ -137,7 +143,6 @@ export function TtsHistoryList({ refreshTrigger = 0 }: TtsHistoryListProps) {
                 {formatDate(item.createdAt)}
               </Text>
             </Group>
-
             <audio id={`audio-${item.id}`} src={item.url} />
           </Stack>
         </Card>
