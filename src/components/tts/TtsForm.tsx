@@ -1,5 +1,4 @@
 // src/components/tts/TtsForm.tsx
-// Modified to include onGenerationSuccess callback
 "use client";
 import { useState, useRef } from "react";
 import { useForm, Controller, SubmitHandler } from "react-hook-form";
@@ -140,8 +139,7 @@ export function TtsForm({ onGenerationSuccess }: TtsFormProps) {
       ) {
         setGeneratedSpeech(response.data);
         enqueueSnackbar(t("alerts.success"), { variant: "success" });
-
-        // Call the onGenerationSuccess callback if provided
+        // Call the onGenerationSuccess callback to refresh history list
         if (onGenerationSuccess) {
           onGenerationSuccess();
         }
