@@ -1,7 +1,15 @@
 // src/services/api/services/tts.ts
-// Updated to require authentication for TTS generation
 import { createPostService, createGetService } from "../factory";
 import { SpeedEnum } from "../types/tts-types";
+
+// Voice config type to replace any[]
+interface VoiceConfig {
+  id: string;
+  displayName: string;
+  gender?: "male" | "female";
+  accent?: string;
+  description?: string;
+}
 
 // Type definitions
 export type GenerateTtsRequest = {
@@ -21,7 +29,7 @@ export type GenerateTtsResponse = {
 export type GetVoicesResponse = {
   defaultSpeaker: string;
   availableSpeakers: Record<string, string>;
-  voiceDetails: any[];
+  voiceDetails: VoiceConfig[]; // Using proper type instead of any[]
 };
 
 export type GetTtsStatusResponse = {
